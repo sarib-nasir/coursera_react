@@ -2,6 +2,9 @@ import React, {Component} from 'react'
 import { Card, CardImg, CardText, CardBody,CardTitle, Breadcrumb, BreadcrumbItem,Row,Label,Button,Modal,ModalHeader,ModalBody,Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import {Control, LocalForm, Errors} from 'react-redux-form'
+import {Loading} from './LoadingComponent'
+
+
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -116,7 +119,6 @@ function RenderComments({comments,addComment,dishId}){
     )
 }
 function RenderDish({dish}) {
-    if (dish != null)
         return(
             <Card>
                 <CardImg top src={dish.image} alt={dish.name} />
@@ -126,40 +128,53 @@ function RenderDish({dish}) {
                 </CardBody>
             </Card>
         );
-    else
-        return(
-            <div></div>
-        );
   }
 
 
 const DishdetailComponent =(props)=> {
-     
-        return (
-            <React.Fragment>
+        if(props.isLoading){
+            return(
                 <div className="container">
-                <div className="row">
-                    <Breadcrumb>
-                        <BreadcrumbItem><Link to="/menu">Menu</Link></BreadcrumbItem>
-                        <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
-                    </Breadcrumb>
-                    <div className="col-12">
-                        <h3>{props.dish.name}</h3>
-                        <hr />
-                    </div>                
-                </div>
-                <div className="row">
-                    <div className="col-12 col-md-5 m-1">
-                        <RenderDish dish={props.dish} />
-                    </div>
-                    <div className="col-12 col-md-5 m-1">
-                        <h4>Comments</h4>
-                        <RenderComments comments={props.comments} addComment={props.addComment} dishId={props.dish.id} />
+                    <div className="row">
+                        <Loading/>
                     </div>
                 </div>
+            )
+        } else if (props.err){
+            return(
+                <div className="container">
+                    <div className="row">
+                        <h4>{props.err}</h4>
+                    </div>
                 </div>
-            </React.Fragment>
-        )
+            )           
+        } else if (props.dish != null){
+            return (
+                <React.Fragment>
+                    <div className="container">
+                    <div className="row">
+                        <Breadcrumb>
+                            <BreadcrumbItem><Link to="/menu">Menu</Link></BreadcrumbItem>
+                            <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
+                        </Breadcrumb>
+                        <div className="col-12">
+                            <h3>{props.dish.name}</h3>
+                            <hr />
+                        </div>                
+                    </div>
+                    <div className="row">
+                        <div className="col-12 col-md-5 m-1">
+                            <RenderDish dish={props.dish} />
+                        </div>
+                        <div className="col-12 col-md-5 m-1">
+                            <h4>Comments</h4>
+                            <RenderComments comments={props.comments} addComment={props.addComment} dishId={props.dish.id} />
+                        </div>
+                    </div>
+                    </div>
+                </React.Fragment>
+            )
+        }
 }
 
 export default DishdetailComponent;
