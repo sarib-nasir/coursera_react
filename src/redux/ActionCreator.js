@@ -46,8 +46,22 @@ export const fetchDishes=()=> (dispatch) => {
 
     return (
         fetch(baseUrl +'dishes')
+        .then(response => {
+            if (response.ok) {
+                return response
+            }
+            else {
+                var error = new Error('error '+ response.status + ': '+response.statusText)
+                error.response = response
+                throw error
+            }
+        },
+        error => {
+              throw error;
+        })
         .then(response => response.json())
         .then(dishes => dispatch(addDishes(dishes)))
+        .catch(error => dispatch(dishesFailed(error.message)))
     )
 }
 export const dishesLoading=()=>({
@@ -65,8 +79,22 @@ export const addDishes=(dishes)=>({
 export const fetchComments=()=> (dispatch)=>{
     return(
         fetch(baseUrl + 'comments')
+        .then(response => {
+            if (response.ok) {
+                return response
+            }
+            else {
+                var error = new Error('error '+ response.status + ': '+response.statusText)
+                error.response = response
+                throw error
+            }
+        },
+        error => {
+              throw error;
+        })
         .then(response => response.json())
         .then(comments => dispatch(addComments(comments)))
+        .catch(error => dispatch(commentsFailed(error.message)))
     )
 }
 export const addComments= (comments)=>({
@@ -80,8 +108,22 @@ export const commentsFailed=(err)=>({
 
 export const fetchPromos =()=>(dispatch)=>{
     fetch(baseUrl + 'promotions')
+    .then(response => {
+        if (response.ok) {
+            return response
+        }
+        else {
+            var error = new Error('error '+ response.status + ': '+response.statusText)
+            error.response = response
+            throw error
+        }
+    },
+    error => {
+          throw error;
+    })
     .then(response=> response.json())
     .then(promos => dispatch(addPromos(promos)))
+    .catch(error => dispatch(promosFailed(error.message)))
 }
 export const promosLoading=()=>({
     type:ActionTypes.PROMOTIONS_LOADING
